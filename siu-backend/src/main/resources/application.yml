@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://51.77.152.221:5432/postgres
+    username: blockchainvalley
+    password: blockchainvalley
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+  jackson:
+    property-naming-strategy: SNAKE_CASE
