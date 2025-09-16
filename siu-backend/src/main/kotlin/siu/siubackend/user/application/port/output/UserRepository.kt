@@ -5,6 +5,7 @@ import java.util.UUID
 
 interface UserRepository {
     fun findByOauthUserId(oauthUserId: String): User?
+    fun findByWalletAddress(walletAddress: String): User?
     fun findByIdentifier(identifier: UUID): User?
     fun save(user: User): User
 }

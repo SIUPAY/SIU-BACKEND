@@ -15,6 +15,10 @@ class UserRepositoryImpl(
         return userJpaRepository.findByOauthUserId(oauthUserId)?.toDomain()
     }
 
+    override fun findByWalletAddress(walletAddress: String): User? {
+        return userJpaRepository.findByWalletAddress(walletAddress)?.toDomain()
+    }
+
     override fun findByIdentifier(identifier: UUID): User? {
         return userJpaRepository.findById(identifier).orElse(null)?.toDomain()
     }

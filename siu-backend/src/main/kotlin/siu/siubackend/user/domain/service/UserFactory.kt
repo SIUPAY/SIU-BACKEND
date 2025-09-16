@@ -20,6 +20,19 @@ object UserFactory {
         )
     }
 
+    fun createUserForWallet(walletAddress: String): User {
+        return User(
+            identifier = UUID.randomUUID(),
+            nickname = generateRandomNickname(),
+            profileImgUrl = generateDefaultProfileImageUrl(),
+            oauthUserId = null,
+            zkloginSalt = null,
+            walletAddress = walletAddress,
+            storeIdentifier = null,
+            createdDate = OffsetDateTime.now(),
+        )
+    }
+
     private fun generateRandomNickname(): String {
         val adjectives = listOf("Happy", "Lucky", "Bright", "Swift", "Cool", "Smart", "Kind", "Bold")
         val nouns = listOf("Tiger", "Eagle", "Lion", "Wolf", "Bear", "Fox", "Hawk", "Dragon")
