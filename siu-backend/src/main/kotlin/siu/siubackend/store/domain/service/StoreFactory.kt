@@ -1,5 +1,6 @@
 package siu.siubackend.store.domain.service
 
+import siu.siubackend.store.domain.Location
 import siu.siubackend.store.domain.Store
 import java.time.OffsetDateTime
 import java.util.*
@@ -10,7 +11,8 @@ object StoreFactory {
         address: String,
         phone: String?,
         profileImgUrl: String,
-        walletAddress: String
+        walletAddress: String,
+        location: Location?
     ): Store {
         return Store(
             identifier = UUID.randomUUID(),
@@ -19,6 +21,7 @@ object StoreFactory {
             phone = phone,
             profileImgUrl = profileImgUrl,
             walletAddress = walletAddress,
+            location = location,
             createdDate = OffsetDateTime.now()
         )
     }

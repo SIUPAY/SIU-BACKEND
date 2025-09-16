@@ -20,7 +20,6 @@ class CreateStoreService(
     private val imageUploadService: ImageUploadService
 ) : CreateStoreUseCase {
 
-    @Transactional
     override fun createStore(userIdentifier: UUID, request: CreateStoreRequest, imageFile: MultipartFile): CreateStoreResponse {
         val user = userRepository.findByIdentifier(userIdentifier)
             ?: throw IllegalArgumentException("User not found with identifier: $userIdentifier")
@@ -35,7 +34,8 @@ class CreateStoreService(
             address = request.address,
             phone = request.phone,
             profileImgUrl = imageUploadResult.url,
-            walletAddress = request.walletAddress
+            walletAddress = request.walletAddress,
+            location = null // location은 별도 API로 설정하도록 함
         )
 
         val savedStore = storeRepository.save(store, userIdentifier)

@@ -10,5 +10,6 @@ data class Store(
     val phone: String?,
     val profileImgUrl: String,
     val walletAddress: String,
+    val location: Location?,
     val createdDate: OffsetDateTime
 )

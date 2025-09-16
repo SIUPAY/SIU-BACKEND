@@ -1,8 +1,14 @@
 package siu.siubackend.store.adapter.out.persistence
 
 import org.springframework.stereotype.Repository
+import siu.siubackend.store.application.port.input.SearchStoreResult
 import siu.siubackend.store.application.port.output.StoreRepository
+import siu.siubackend.store.domain.Location
 import siu.siubackend.store.domain.Store
+import java.math.BigDecimal
+import java.sql.Timestamp
+import java.time.OffsetDateTime
+import java.time.ZoneOffset
 import java.util.*
 
 @Repository
@@ -32,5 +38,43 @@ class StoreRepositoryImpl(
 
     override fun deleteById(identifier: UUID) {
         storeJpaRepository.deleteById(identifier)
+    }
+
+    override fun searchStoresWithinDistance(
+        location: Location,
+        distance: Int,
+        query: String?
+    ): List<SearchStoreResult> {
+        val results = storeJpaRepository.findStoresWithinDistance(
+            location.latitude,
+            location.longitude,
+            distance,
+            query
+        )
+
+        return results.map { row ->
+            val store = mapRowToStore(row)
+            val distanceValue = (row[row.size - 2] as BigDecimal).toDouble()
+            val totalOrderCount = (row[row.size - 1] as BigDecimal).toInt()
+
+            SearchStoreResult(
+                store = store,
+                distance = distanceValue,
+                totalOrderCount = totalOrderCount
+            )
+        }
+    }
+
+    private fun mapRowToStore(row: Array<Any>): Store {
+        return Store(
+            identifier = row[0] as UUID,
+            name = row[2] as String,
+            address = row[3] as String,
+            phone = row[4] as String?,
+            profileImgUrl = row[5] as String,
+            walletAddress = row[6] as String,
+            location = null, // location은 검색 결과에서 불필요하므로 null로 설정
+            createdDate = (row[8] as Timestamp).toInstant().atOffset(ZoneOffset.UTC)
+        )
     }
 }
