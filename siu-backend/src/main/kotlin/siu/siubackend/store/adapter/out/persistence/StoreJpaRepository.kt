@@ -10,15 +10,18 @@ interface StoreJpaRepository : JpaRepository<StoreEntity, UUID> {
 
     @Query(
         value = """
-        SELECT s.*, 
-               ST_Distance(s.location, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)) as distance,
-               COALESCE(order_count.total_orders, 0) as total_order_count
-        FROM stores s
-        LEFT JOIN (
-            SELECT store_id, COUNT(*) as total_orders 
-            FROM orders 
-            GROUP BY store_id
-        ) order_count ON s.identifier = order_count.store_id
+        SELECT 
+            s.identifier,
+            s.user_identifier,
+            s.name,
+            s.address,
+            s.phone,
+            s.profile_img_url,
+            s.wallet_address,
+            s.total_order_count,
+            s.created_date,
+            ST_Distance(s.location, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326)) as distance
+        FROM store s
         WHERE ST_DWithin(s.location, ST_SetSRID(ST_MakePoint(:longitude, :latitude), 4326), :distance)
         AND (:query IS NULL OR s.name ILIKE CONCAT('%', :query, '%'))
         ORDER BY distance ASC

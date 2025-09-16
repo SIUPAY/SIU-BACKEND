@@ -5,8 +5,7 @@ import siu.siubackend.store.application.port.input.SearchStoreResult
 import siu.siubackend.store.application.port.output.StoreRepository
 import siu.siubackend.store.domain.Location
 import siu.siubackend.store.domain.Store
-import java.math.BigDecimal
-import java.sql.Timestamp
+import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneOffset
 import java.util.*
@@ -54,27 +53,37 @@ class StoreRepositoryImpl(
 
         return results.map { row ->
             val store = mapRowToStore(row)
-            val distanceValue = (row[row.size - 2] as BigDecimal).toDouble()
-            val totalOrderCount = (row[row.size - 1] as BigDecimal).toInt()
+            val distanceValue = (row[9] as? Number)?.toDouble() ?: 0.0
 
             SearchStoreResult(
                 store = store,
-                distance = distanceValue,
-                totalOrderCount = totalOrderCount
+                distance = distanceValue
             )
         }
     }
 
     private fun mapRowToStore(row: Array<Any>): Store {
         return Store(
-            identifier = row[0] as UUID,
-            name = row[2] as String,
-            address = row[3] as String,
-            phone = row[4] as String?,
-            profileImgUrl = row[5] as String,
-            walletAddress = row[6] as String,
-            location = null, // location은 검색 결과에서 불필요하므로 null로 설정
-            createdDate = (row[8] as Timestamp).toInstant().atOffset(ZoneOffset.UTC)
+            identifier = when (val id = row[0]) {
+                is UUID -> id
+                is String -> UUID.fromString(id)
+                else -> throw IllegalArgumentException("Invalid identifier type: ${id::class}")
+            },
+            name = row[2].toString(),
+            address = row[3].toString(),
+            phone = row[4]?.toString(),
+            profileImgUrl = row[5].toString(),
+            walletAddress = row[6].toString(),
+            location = Location(latitude = 0.0, longitude = 0.0), // 검색 결과에서는 위치 정보 불필요
+            totalOrderCount = when (val count = row[7]) {
+                is Number -> count.toInt()
+                else -> 0
+            },
+            createdDate = when (val date = row[8]) {
+                is Instant -> date.atOffset(ZoneOffset.UTC)
+                is java.sql.Timestamp -> date.toInstant().atOffset(ZoneOffset.UTC)
+                else -> OffsetDateTime.now()
+            }
         )
     }
 }

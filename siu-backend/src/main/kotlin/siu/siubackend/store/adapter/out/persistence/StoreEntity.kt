@@ -35,8 +35,11 @@ data class StoreEntity(
     @Column(name = "wallet_address", nullable = false)
     var walletAddress: String,
 
-    @Column(name = "location", columnDefinition = "geography(Point, 4326)")
-    val location: Point?,
+    @Column(name = "location", nullable = false, columnDefinition = "geography(Point, 4326)")
+    val location: Point,
+
+    @Column(name = "total_order_count", nullable = false)
+    var totalOrderCount: Int,
 
     @Column(name = "created_date", nullable = false)
     val createdDate: OffsetDateTime
@@ -51,7 +54,8 @@ data class StoreEntity(
                 phone = store.phone,
                 profileImgUrl = store.profileImgUrl,
                 walletAddress = store.walletAddress,
-                location = store.location?.toGeometryPoint(),
+                location = store.location.toGeometryPoint(),
+                totalOrderCount = store.totalOrderCount,
                 createdDate = store.createdDate
             )
         }
@@ -75,7 +79,8 @@ data class StoreEntity(
             phone = phone,
             profileImgUrl = profileImgUrl,
             walletAddress = walletAddress,
-            location = location?.toStoreLocation(),
+            location = location.toStoreLocation(),
+            totalOrderCount = totalOrderCount,
             createdDate = createdDate
         )
     }

@@ -10,8 +10,7 @@ data class SearchStoreRequest(
 
 data class SearchStoreResult(
     val store: siu.siubackend.store.domain.Store,
-    val distance: Double,
-    val totalOrderCount: Int
+    val distance: Double
 )
 
 interface SearchStoreUseCase {

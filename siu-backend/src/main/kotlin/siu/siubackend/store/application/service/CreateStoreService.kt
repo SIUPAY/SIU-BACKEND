@@ -35,7 +35,7 @@ class CreateStoreService(
             phone = request.phone,
             profileImgUrl = imageUploadResult.url,
             walletAddress = request.walletAddress,
-            location = null // location은 별도 API로 설정하도록 함
+            location = request.location
         )
 
         val savedStore = storeRepository.save(store, userIdentifier)

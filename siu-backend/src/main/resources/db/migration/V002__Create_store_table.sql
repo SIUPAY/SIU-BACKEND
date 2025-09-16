@@ -14,7 +14,6 @@ CREATE TABLE store (
     created_date TIMESTAMPTZ NOT NULL
 );
 
-CREATE INDEX idx_store_user_identifier ON store(user_identifier);
-CREATE INDEX idx_store_wallet_address ON store(wallet_address);
-CREATE INDEX idx_store_location ON store USING GIST(location);
-CREATE INDEX idx_store_total_order_count ON store(total_order_count);
+CREATE INDEX idx_stores_user_identifier ON store(user_identifier);
+CREATE INDEX idx_stores_wallet_address ON store(wallet_address);
+CREATE INDEX idx_stores_location ON store USING GIST(location);

@@ -28,7 +28,11 @@ class StoreController(
             name = storeData.name,
             address = storeData.address,
             phone = storeData.phone,
-            walletAddress = storeData.walletAddress
+            walletAddress = storeData.walletAddress,
+            location = Location(
+                latitude = storeData.latitude,
+                longitude = storeData.longitude
+            )
         )
 
         val response = createStoreUseCase.createStore(storeData.userIdentifier, request, imageFile)
@@ -58,7 +62,7 @@ class StoreController(
                 profileImgUrl = result.store.profileImgUrl,
                 walletAddress = result.store.walletAddress,
                 distance = result.distance,
-                totalOrderCount = result.totalOrderCount,
+                totalOrderCount = result.store.totalOrderCount,
                 createdDate = result.store.createdDate
             )
         }

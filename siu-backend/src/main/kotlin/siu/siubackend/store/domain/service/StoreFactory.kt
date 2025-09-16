@@ -12,7 +12,7 @@ object StoreFactory {
         phone: String?,
         profileImgUrl: String,
         walletAddress: String,
-        location: Location?
+        location: Location
     ): Store {
         return Store(
             identifier = UUID.randomUUID(),
@@ -22,6 +22,7 @@ object StoreFactory {
             profileImgUrl = profileImgUrl,
             walletAddress = walletAddress,
             location = location,
+            totalOrderCount = 0, // 새로 생성된 매장은 주문 수 0
             createdDate = OffsetDateTime.now()
         )
     }

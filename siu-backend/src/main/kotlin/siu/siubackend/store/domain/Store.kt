@@ -10,6 +10,15 @@ data class Store(
     val phone: String?,
     val profileImgUrl: String,
     val walletAddress: String,
-    val location: Location?,
+    val location: Location,
+    val totalOrderCount: Int,
     val createdDate: OffsetDateTime
-)
+) {
+    fun incrementOrderCount(): Store {
+        return this.copy(totalOrderCount = totalOrderCount + 1)
+    }
+
+    fun updateOrderCount(newCount: Int): Store {
+        return this.copy(totalOrderCount = newCount)
+    }
+}
