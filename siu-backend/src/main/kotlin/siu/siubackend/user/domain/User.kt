@@ -1,6 +1,5 @@
 package siu.siubackend.user.domain
 
-import siu.siubackend.user.adapter.output.persistence.UserEntity
 import java.time.OffsetDateTime
 import java.util.UUID
 

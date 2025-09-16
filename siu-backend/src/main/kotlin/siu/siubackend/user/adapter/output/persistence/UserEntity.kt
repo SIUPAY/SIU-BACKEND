@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Entity
-@Table(name = "user")
+@Table(name = "`user`")
 class UserEntity(
 
     @Id
@@ -49,16 +49,16 @@ class UserEntity(
     }
 
     companion object {
-        fun User.toEntity(user: User): UserEntity {
+        fun User.toEntity(): UserEntity {
             return UserEntity(
-                identifier = user.identifier,
-                nickname = user.nickname,
-                profileImgUrl = user.profileImgUrl,
-                oauthUserId = user.oauthUserId,
-                zkloginSalt = user.zkloginSalt,
-                walletAddress = user.walletAddress,
-                storeIdentifier = user.storeIdentifier,
-                createdDate = user.createdDate
+                identifier = this.identifier,
+                nickname = this.nickname,
+                profileImgUrl = this.profileImgUrl,
+                oauthUserId = this.oauthUserId,
+                zkloginSalt = this.zkloginSalt,
+                walletAddress = this.walletAddress,
+                storeIdentifier = this.storeIdentifier,
+                createdDate = this.createdDate
             )
         }
     }
