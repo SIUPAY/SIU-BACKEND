@@ -1,11 +1,11 @@
 -- User 테이블 생성
 CREATE TABLE "user" (
                         identifier UUID PRIMARY KEY,
-                        nickname VARCHAR(100) NOT NULL,
+                        nickname VARCHAR NOT NULL,
                         profile_img_url TEXT NOT NULL,
-                        oauth_user_id VARCHAR(255),
-                        zklogin_salt VARCHAR(255),
-                        wallet_address VARCHAR(255),
+                        oauth_user_id VARCHAR,
+                        zklogin_salt VARCHAR,
+                        wallet_address VARCHAR,
                         store_identifier UUID,
                         created_date TIMESTAMPTZ NOT NULL
 );
