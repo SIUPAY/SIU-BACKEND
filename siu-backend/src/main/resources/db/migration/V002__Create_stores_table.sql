@@ -1,5 +1,6 @@
 CREATE TABLE store (
     identifier UUID PRIMARY KEY,
+    user_identifier UUID NOT NULL,
     name VARCHAR NOT NULL,
     address VARCHAR NOT NULL,
     phone VARCHAR,
@@ -8,4 +9,5 @@ CREATE TABLE store (
     created_date TIMESTAMPTZ NOT NULL
 );
 
+CREATE INDEX idx_stores_user_identifier ON store(user_identifier);
 CREATE INDEX idx_stores_wallet_address ON store(wallet_address);

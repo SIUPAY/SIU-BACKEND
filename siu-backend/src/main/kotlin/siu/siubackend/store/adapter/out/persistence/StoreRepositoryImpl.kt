@@ -10,8 +10,8 @@ class StoreRepositoryImpl(
     private val storeJpaRepository: StoreJpaRepository
 ) : StoreRepository {
 
-    override fun save(store: Store): Store {
-        val storeEntity = store.toEntity()
+    override fun save(store: Store, userIdentifier: UUID): Store {
+        val storeEntity = store.toEntity(userIdentifier)
         val savedEntity = storeJpaRepository.save(storeEntity)
         return savedEntity.toDomain()
     }

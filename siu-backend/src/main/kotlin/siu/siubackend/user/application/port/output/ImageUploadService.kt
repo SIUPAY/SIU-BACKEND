@@ -1,14 +1,7 @@
 package siu.siubackend.user.application.port.output
 
-import org.springframework.web.multipart.MultipartFile
+import siu.siubackend.common.image.ImageUploadResult
+import siu.siubackend.common.image.ImageUploadService as CommonImageUploadService
 
-data class ImageUploadResult(
-    val success: Boolean,
-    val message: String,
-    val url: String?,
-    val fileId: Int?
-)
-
-interface ImageUploadService {
-    fun uploadImage(imageFile: MultipartFile): ImageUploadResult
-}
+typealias ImageUploadService = CommonImageUploadService
+typealias ImageUploadResult = siu.siubackend.common.image.ImageUploadResult

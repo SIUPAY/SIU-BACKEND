@@ -2,8 +2,8 @@ package siu.siubackend.user.application.service
 
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import siu.siubackend.common.image.ImageUploadService
 import siu.siubackend.user.application.port.input.UpdateProfileUseCase
-import siu.siubackend.user.application.port.output.ImageUploadService
 import siu.siubackend.user.application.port.output.UserRepository
 import java.util.UUID
 

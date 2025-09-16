@@ -6,7 +6,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Entity
-@Table(name = "stores")
+@Table(name = "store")
 data class StoreEntity(
     @Id
     @Column(name = "identifier")
@@ -30,6 +30,19 @@ data class StoreEntity(
     @Column(name = "created_date", nullable = false)
     val createdDate: OffsetDateTime
 ) {
+    companion object {
+        fun fromDomain(store: Store, userIdentifier: UUID): StoreEntity {
+            return StoreEntity(
+                identifier = store.identifier,
+                name = store.name,
+                address = store.address,
+                phone = store.phone,
+                profileImgUrl = store.profileImgUrl,
+                walletAddress = store.walletAddress,
+                createdDate = store.createdDate
+            )
+        }
+    }
 
     fun toDomain(): Store {
         return Store(
@@ -42,18 +55,8 @@ data class StoreEntity(
             createdDate = createdDate
         )
     }
+}
 
-    companion object {
-        fun Store.toEntity(): StoreEntity {
-            return StoreEntity(
-                identifier = this.identifier,
-                name = this.name,
-                address = this.address,
-                phone = this.phone,
-                profileImgUrl = this.profileImgUrl,
-                walletAddress = this.walletAddress,
-                createdDate = this.createdDate
-            )
-        }
-    }
+fun Store.toEntity(userIdentifier: UUID): StoreEntity {
+    return StoreEntity.fromDomain(this, userIdentifier)
 }
