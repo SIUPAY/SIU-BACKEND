@@ -20,4 +20,10 @@ data class User(
             profileImgUrl = profileImgUrl
         )
     }
+
+    fun updateStoreIdentifier(storeIdentifier: UUID): User {
+        return this.copy(
+            storeIdentifier = storeIdentifier
+        )
+    }
 }

@@ -1,4 +1,4 @@
-package siu.siubackend.user.adapter.output.external
+package siu.siubackend.common.image
 
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.http.HttpEntity
@@ -9,8 +9,6 @@ import org.springframework.util.LinkedMultiValueMap
 import org.springframework.util.MultiValueMap
 import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
-import siu.siubackend.user.application.port.output.ImageUploadResult
-import siu.siubackend.user.application.port.output.ImageUploadService
 
 @Component
 class ExternalImageUploadService : ImageUploadService {
