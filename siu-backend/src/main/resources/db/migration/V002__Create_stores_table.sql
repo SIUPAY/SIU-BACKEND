@@ -1,7 +1,7 @@
 -- Enable PostGIS extension
 CREATE EXTENSION IF NOT EXISTS postgis;
 
-CREATE TABLE stores (
+CREATE TABLE store (
     identifier UUID PRIMARY KEY,
     user_identifier UUID NOT NULL,
     name VARCHAR NOT NULL,
@@ -13,6 +13,6 @@ CREATE TABLE stores (
     created_date TIMESTAMPTZ NOT NULL
 );
 
-CREATE INDEX idx_stores_user_identifier ON stores(user_identifier);
-CREATE INDEX idx_stores_wallet_address ON stores(wallet_address);
-CREATE INDEX idx_stores_location ON stores USING GIST(location);
+CREATE INDEX idx_stores_user_identifier ON store(user_identifier);
+CREATE INDEX idx_stores_wallet_address ON store(wallet_address);
+CREATE INDEX idx_stores_location ON store USING GIST(location);
