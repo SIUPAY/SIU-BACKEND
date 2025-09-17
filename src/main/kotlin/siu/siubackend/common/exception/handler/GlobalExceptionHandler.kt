@@ -21,7 +21,7 @@ import siu.siubackend.common.exception.domain.ValidationException
 import jakarta.validation.ConstraintViolationException
 import java.nio.file.AccessDeniedException
 
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = ["siu.siubackend"])
 class GlobalExceptionHandler {
 
     @ExceptionHandler(SiuException::class)
@@ -41,7 +41,7 @@ class GlobalExceptionHandler {
             status = status.value(),
             error = status.reasonPhrase,
             code = ex.errorCode,
-            message = ex.message,
+            message = ex.message ?: status.reasonPhrase,
             path = getPath(request)
         )
 
@@ -80,7 +80,7 @@ class GlobalExceptionHandler {
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
             code = ErrorCode.VALIDATION_ERROR.code,
-            message = originalMessage,
+            message = originalMessage ?: "요청 데이터가 유효하지 않습니다",
             path = getPath(request),
             details = details
         )
@@ -102,7 +102,7 @@ class GlobalExceptionHandler {
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
             code = ErrorCode.VALIDATION_ERROR.code,
-            message = originalMessage,
+            message = originalMessage ?: "요청 데이터가 유효하지 않습니다",
             path = getPath(request),
             details = details
         )
@@ -141,7 +141,7 @@ class GlobalExceptionHandler {
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
             code = ErrorCode.MISSING_REQUEST_PARAMETER.code,
-            message = ex.message,
+            message = ex.message ?: "필수 요청 파라미터가 누락되었습니다",
             path = getPath(request)
         )
 
@@ -157,7 +157,7 @@ class GlobalExceptionHandler {
             status = HttpStatus.BAD_REQUEST.value(),
             error = HttpStatus.BAD_REQUEST.reasonPhrase,
             code = ErrorCode.INVALID_REQUEST_PARAMETER.code,
-            message = ex.message,
+            message = ex.message ?: "잘못된 요청 파라미터입니다",
             path = getPath(request)
         )
 
