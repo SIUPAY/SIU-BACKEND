@@ -10,7 +10,11 @@ import siu.siubackend.common.exception.ExceptionUtils
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Positive
+import org.springframework.context.annotation.Profile
+import io.swagger.v3.oas.annotations.Hidden
 
+@Hidden
+@Profile("local")
 @RestController
 @RequestMapping("/api/test/exceptions")
 class ExceptionTestController {
