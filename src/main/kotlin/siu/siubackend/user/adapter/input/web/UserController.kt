@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
+import com.fasterxml.jackson.databind.ObjectMapper
 import siu.siubackend.user.adapter.input.web.dto.UpdateProfileRequest
 import siu.siubackend.user.adapter.input.web.dto.UserResponse
 import siu.siubackend.user.application.port.input.GetUserUseCase
@@ -19,7 +20,8 @@ import java.util.UUID
 @RequestMapping("/api/users")
 class UserController(
     private val updateProfileUseCase: UpdateProfileUseCase,
-    private val getUserUseCase: GetUserUseCase
+    private val getUserUseCase: GetUserUseCase,
+    private val objectMapper: ObjectMapper
 ) {
 
     @GetMapping("/{user_identifier}")
@@ -52,7 +54,7 @@ class UserController(
             required = true,
             content = [Content(mediaType = "application/json", schema = Schema(implementation = UpdateProfileRequest::class))]
         )
-        @Valid @RequestPart("data") updateProfileRequest: UpdateProfileRequest,
+        @RequestPart("data") data: String,
         @Parameter(
             name = "image",
             required = true,
@@ -60,6 +62,7 @@ class UserController(
         )
         @RequestPart("image") image: MultipartFile
     ): ResponseEntity<Void> {
+        val updateProfileRequest = objectMapper.readValue(data, UpdateProfileRequest::class.java)
         updateProfileUseCase.updateProfile(
             userIdentifier = userIdentifier,
             nickname = updateProfileRequest.nickname,
