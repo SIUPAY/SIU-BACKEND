@@ -11,9 +11,10 @@ import org.springframework.web.client.RestTemplate
 import org.springframework.web.multipart.MultipartFile
 
 @Component
-class ExternalImageUploadService : ImageUploadService {
+class ExternalImageUploadService(
+    private val restTemplate: RestTemplate
+) : ImageUploadService {
 
-    private val restTemplate = RestTemplate()
     private val imageUploadUrl = "https://img.allora.pw/store-image"
 
     override fun uploadImage(imageFile: MultipartFile): ImageUploadResult {
