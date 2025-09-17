@@ -3,6 +3,12 @@ package siu.siubackend.store.adapter.`in`.web
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
 import siu.siubackend.store.adapter.`in`.web.dto.CreateStoreResponseDto
 import siu.siubackend.store.adapter.`in`.web.dto.GetStoreResponseDto
 import siu.siubackend.store.adapter.`in`.web.dto.SearchStoreResponseDto
@@ -20,14 +26,30 @@ import java.util.*
 class StoreController(
     private val createStoreUseCase: CreateStoreUseCase,
     private val searchStoreUseCase: SearchStoreUseCase,
-    private val getStoreUseCase: GetStoreUseCase
+    private val getStoreUseCase: GetStoreUseCase,
+    private val objectMapper: ObjectMapper
 ) {
 
+    @Operation(
+        summary = "가게 생성",
+        description = "multipart/form-data로 JSON(data) + 이미지(image) 업로드"
+    )
     @PostMapping(consumes = ["multipart/form-data"])
     fun createStore(
-        @RequestPart("data") storeData: StoreDataDto,
+        @Parameter(
+            name = "data",
+            required = true,
+            content = [Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = StoreDataDto::class),
+                examples = [ExampleObject(value = """{\n  \"userIdentifier\": \"<uuid>\",\n  \"name\": \"카페\",\n  \"address\": \"서울시\",\n  \"phone\": \"010-0000-0000\",\n  \"walletAddress\": \"0x...\",\n  \"latitude\": 37.5,\n  \"longitude\": 127.0\n}""")]
+            )]
+        )
+        @RequestPart("data") dataJson: String,
+        @Parameter(name = "image", content = [Content(mediaType = "image/*", schema = Schema(type = "string", format = "binary"))])
         @RequestPart("image") imageFile: MultipartFile
     ): ResponseEntity<CreateStoreResponseDto> {
+        val storeData = objectMapper.readValue(dataJson, StoreDataDto::class.java)
         val request = CreateStoreRequest(
             name = storeData.name,
             address = storeData.address,

@@ -5,6 +5,12 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import com.fasterxml.jackson.databind.ObjectMapper
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.ExampleObject
+import io.swagger.v3.oas.annotations.media.Schema
 import siu.siubackend.menu.adapter.`in`.dto.CreateMenuPayload
 import siu.siubackend.menu.adapter.`in`.dto.MenuResponse
 import siu.siubackend.menu.adapter.`in`.dto.UpdateMenuRequest
@@ -19,7 +25,8 @@ class MenuController(
     private val updateMenu: UpdateMenuUseCase,
     private val deleteMenu: DeleteMenuUseCase,
     private val listMenus: ListMenusUseCase,
-    private val listMenusByStore: ListMenusByStoreUseCase
+    private val listMenusByStore: ListMenusByStoreUseCase,
+    private val objectMapper: ObjectMapper
 ) {
     // GET /api/menus
     @GetMapping("/api/menus")
@@ -29,14 +36,29 @@ class MenuController(
     }
 
     // POST /api/menus (menu JSON + image File) -> 204
+    @Operation(
+        summary = "메뉴 생성",
+        description = "multipart/form-data로 JSON(menu) + 이미지(image) 업로드"
+    )
     @PostMapping(
         "/api/menus",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
     fun create(
-        @Valid @RequestPart("menu") payload: CreateMenuPayload,
+        @Parameter(
+            name = "menu",
+            required = true,
+            content = [Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = CreateMenuPayload::class),
+                examples = [ExampleObject(value = """{\n  \"store_identifier\": \"<uuid>\",\n  \"category_identifier\": null,\n  \"name\": \"아메리카노\",\n  \"price\": 4500,\n  \"description\": \"hot\"\n}""")]
+            )]
+        )
+        @RequestPart("menu") menuJson: String,
+        @Parameter(name = "image", content = [Content(mediaType = "image/*", schema = Schema(type = "string", format = "binary"))])
         @RequestPart("image", required = false) image: MultipartFile?
     ): ResponseEntity<Void> {
+        val payload = objectMapper.readValue(menuJson, CreateMenuPayload::class.java)
         createMenu.handle(
             CreateMenuUseCase.Command(
                 storeIdentifier = payload.store_identifier,
@@ -52,15 +74,30 @@ class MenuController(
     }
 
     // PUT /api/menus/{id} (menu JSON + image File?) -> 204
+    @Operation(
+        summary = "메뉴 수정",
+        description = "multipart/form-data로 JSON(menu) + 이미지(image) 업로드"
+    )
     @PutMapping(
         "/api/menus/{id}",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
     fun update(
         @PathVariable id: UUID,
-        @Valid @RequestPart("menu") req: UpdateMenuRequest,
+        @Parameter(
+            name = "menu",
+            required = true,
+            content = [Content(
+                mediaType = "application/json",
+                schema = Schema(implementation = UpdateMenuRequest::class),
+                examples = [ExampleObject(value = """{\n  \"name\": \"라떼\",\n  \"price\": 5000,\n  \"description\": \"iced\",\n  \"category_identifier\": null\n}""")]
+            )]
+        )
+        @RequestPart("menu") menuJson: String,
+        @Parameter(name = "image", content = [Content(mediaType = "image/*", schema = Schema(type = "string", format = "binary"))])
         @RequestPart("image", required = false) image: MultipartFile?
     ): ResponseEntity<Void> {
+        val req = objectMapper.readValue(menuJson, UpdateMenuRequest::class.java)
         updateMenu.handle(
             id,
             UpdateMenuUseCase.Command(
