@@ -1,5 +1,7 @@
 package siu.siubackend.user.adapter.input.web
 
+import jakarta.validation.Valid
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -31,10 +33,13 @@ class UserController(
         return ResponseEntity.ok(response)
     }
 
-    @PutMapping("/{user_identifier}/profile")
+    @PutMapping(
+        "/{user_identifier}/profile",
+        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+    )
     fun updateProfile(
         @PathVariable("user_identifier") userIdentifier: UUID,
-        @RequestPart("data") updateProfileRequest: UpdateProfileRequest,
+        @Valid @RequestPart("data") updateProfileRequest: UpdateProfileRequest,
         @RequestPart("image") image: MultipartFile
     ): ResponseEntity<Void> {
         updateProfileUseCase.updateProfile(
