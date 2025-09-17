@@ -5,6 +5,11 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Encoding
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.parameters.RequestBody
 import siu.siubackend.user.adapter.input.web.dto.UpdateProfileRequest
 import siu.siubackend.user.adapter.input.web.dto.UserResponse
 import siu.siubackend.user.application.port.input.GetUserUseCase
@@ -33,6 +38,25 @@ class UserController(
         return ResponseEntity.ok(response)
     }
 
+    @Operation(
+        summary = "프로필 수정",
+        description = "multipart/form-data로 JSON(data) + 이미지(image) 업로드",
+        requestBody = RequestBody(
+            required = true,
+            content = [
+                Content(
+                    mediaType = "multipart/form-data",
+                    encoding = [
+                        Encoding(name = "data", contentType = "application/json"),
+                        Encoding(name = "image", contentType = "image/*")
+                    ],
+                    schema = Schema(
+                        type = "object"
+                    )
+                )
+            ]
+        )
+    )
     @PutMapping(
         "/{user_identifier}/profile",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
