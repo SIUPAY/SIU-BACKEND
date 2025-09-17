@@ -1,6 +1,7 @@
 package siu.siubackend.user.application.service
 
 import org.springframework.stereotype.Service
+import siu.siubackend.common.exception.ExceptionUtils
 import siu.siubackend.user.application.port.input.GetUserUseCase
 import siu.siubackend.user.application.port.output.UserRepository
 import siu.siubackend.user.domain.User
@@ -13,6 +14,6 @@ class GetUserService(
 
     override fun getUser(userIdentifier: UUID): User {
         return userRepository.findByIdentifier(userIdentifier)
-            ?: throw IllegalArgumentException("사용자를 찾을 수 없습니다.")
+            ?: ExceptionUtils.throwUserNotFound(userIdentifier.toString())
     }
 }

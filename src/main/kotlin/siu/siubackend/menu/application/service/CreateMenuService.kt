@@ -2,6 +2,7 @@ package siu.siubackend.menu.application.service
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import siu.siubackend.common.exception.ExceptionUtils
 import siu.siubackend.menu.application.port.input.CreateMenuUseCase
 import siu.siubackend.menu.application.port.output.ImageUploader
 import siu.siubackend.menu.application.port.output.MenuRepository
@@ -16,6 +17,8 @@ class CreateMenuService(
 
     @Transactional
     override fun handle(cmd: CreateMenuUseCase.Command): UUID {
+        validateCommand(cmd)
+        
         val url = cmd.imageFileBytes?.let { uploader.upload(it, cmd.imageOriginalName) }
         val menu = MenuFactory.create(
             storeIdentifier = cmd.storeIdentifier,
@@ -26,5 +29,14 @@ class CreateMenuService(
             imageUrl = url
         )
         return repo.save(menu).identifier
+    }
+    
+    private fun validateCommand(cmd: CreateMenuUseCase.Command) {
+        if (cmd.name.isBlank()) {
+            ExceptionUtils.throwValidationError("메뉴 이름은 필수입니다")
+        }
+        if (cmd.price < 0) {
+            ExceptionUtils.throwValidationError("메뉴 가격은 0원 이상이어야 합니다")
+        }
     }
 }
