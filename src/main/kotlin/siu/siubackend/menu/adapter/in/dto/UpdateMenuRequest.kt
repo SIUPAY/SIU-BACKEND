@@ -8,5 +8,6 @@ data class UpdateMenuRequest(
     @field:NotBlank val name: String,
     @field:Min(0) val price: Int,
     val description: String?,
-    val category_identifier: UUID?
+    val category_identifier: UUID?,
+    val is_available: Boolean?
 )

@@ -9,4 +9,5 @@ interface MenuRepository {
     fun deleteById(id: UUID)
     fun findAll(): List<Menu>
     fun findAllByStore(storeIdentifier: UUID): List<Menu>
+    fun findByStoreWithFilters(storeIdentifier: UUID, categoryIdentifier: UUID?, available: Boolean?): List<Menu>
 }

@@ -11,6 +11,6 @@ import java.util.*
 class ListMenusByStoreService(
     private val repo: MenuRepository
 ) : ListMenusByStoreUseCase {
-    override fun handle(storeIdentifier: UUID): List<Menu> =
-        repo.findAllByStore(storeIdentifier)
+    override fun handle(storeIdentifier: UUID, categoryIdentifier: UUID?, available: Boolean?): List<Menu> =
+        repo.findByStoreWithFilters(storeIdentifier, categoryIdentifier, available)
 }

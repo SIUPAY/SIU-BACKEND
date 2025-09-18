@@ -11,7 +11,8 @@ object MenuFactory {
         name: String,
         price: Int,
         description: String?,
-        imageUrl: String?
+        imageUrl: String?,
+        isAvailable: Boolean
     ): Menu {
         require(name.isNotBlank())
         require(price >= 0)
@@ -23,6 +24,7 @@ object MenuFactory {
             price = price,
             description = description,
             imageUrl = imageUrl,
+            isAvailable = isAvailable,
             createdDate = OffsetDateTime.now()
         )
     }

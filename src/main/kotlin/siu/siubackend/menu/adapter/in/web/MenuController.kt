@@ -15,6 +15,7 @@ import siu.siubackend.menu.adapter.`in`.dto.CreateMenuPayload
 import siu.siubackend.menu.adapter.`in`.dto.MenuResponse
 import siu.siubackend.menu.adapter.`in`.dto.UpdateMenuRequest
 import siu.siubackend.menu.application.port.input.*
+import siu.siubackend.menu.application.port.output.CategoryRepository
 import siu.siubackend.menu.domain.Menu
 import java.util.*
 
@@ -26,7 +27,8 @@ class MenuController(
     private val deleteMenu: DeleteMenuUseCase,
     private val listMenus: ListMenusUseCase,
     private val listMenusByStore: ListMenusByStoreUseCase,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val categoryRepository: CategoryRepository
 ) {
     // GET /api/menus
     @GetMapping("/api/menus")
@@ -35,42 +37,56 @@ class MenuController(
         return ResponseEntity.ok(mapOf("menus" to menus))
     }
 
-    // POST /api/menus (menu JSON + image File) -> 204
+    // POST /api/stores/{store_identifier}/menu (multipart) -> 201
     @Operation(
         summary = "메뉴 생성",
         description = "multipart/form-data로 JSON(menu) + 이미지(image) 업로드"
     )
     @PostMapping(
-        "/api/menus",
+        "/api/stores/{store_identifier}/menu",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
     fun create(
+        @PathVariable("store_identifier") storeIdentifier: UUID,
         @Parameter(
             name = "menu",
             required = true,
             content = [Content(
                 mediaType = "application/json",
                 schema = Schema(implementation = CreateMenuPayload::class),
-                examples = [ExampleObject(value = """{\n  \"store_identifier\": \"<uuid>\",\n  \"category_identifier\": null,\n  \"name\": \"아메리카노\",\n  \"price\": 4500,\n  \"description\": \"hot\"\n}""")]
+                examples = [ExampleObject(value = """{\n  \"category_identifier\": \"<uuid>\",\n  \"name\": \"아메리카노\",\n  \"price\": 4500,\n  \"description\": \"hot\",\n  \"is_available\": true\n}""")]
             )]
         )
         @RequestPart("menu") menuJson: String,
         @Parameter(name = "image", content = [Content(mediaType = "image/*", schema = Schema(type = "string", format = "binary"))])
         @RequestPart("image", required = false) image: MultipartFile?
-    ): ResponseEntity<Void> {
+    ): ResponseEntity<Map<String, Any?>> {
         val payload = objectMapper.readValue(menuJson, CreateMenuPayload::class.java)
-        createMenu.handle(
+        val saved = createMenu.handle(
             CreateMenuUseCase.Command(
-                storeIdentifier = payload.store_identifier,
+                storeIdentifier = storeIdentifier,
                 categoryIdentifier = payload.category_identifier,
                 name = payload.name,
                 price = payload.price,
                 description = payload.description,
+                isAvailable = payload.is_available,
                 imageFileBytes = image?.bytes,
                 imageOriginalName = image?.originalFilename
             )
         )
-        return ResponseEntity.noContent().build()
+        val body = mapOf(
+            "menu_identifier" to saved.identifier,
+            "store_identifier" to saved.storeIdentifier,
+            "category_identifier" to saved.categoryIdentifier,
+            "name" to saved.name,
+            "description" to saved.description,
+            "price" to saved.price,
+            "currency" to "KRW",
+            "is_available" to saved.isAvailable,
+            "image_url" to saved.imageUrl,
+            "created_at" to saved.createdDate
+        )
+        return ResponseEntity.status(201).body(body)
     }
 
     // PUT /api/menus/{id} (menu JSON + image File?) -> 204
@@ -105,6 +121,7 @@ class MenuController(
                 price = req.price,
                 description = req.description,
                 categoryIdentifier = req.category_identifier,
+                isAvailable = req.is_available,
                 imageFileBytes = image?.bytes,
                 imageOriginalName = image?.originalFilename
             )
@@ -121,10 +138,46 @@ class MenuController(
 
     // GET /api/stores/{store_identifier}/menus
     @GetMapping("/api/stores/{store_identifier}/menus")
-    fun getByStore(@PathVariable("store_identifier") storeId: UUID)
-            : ResponseEntity<Map<String, List<MenuResponse>>> {
-        val menus = listMenusByStore.handle(storeId).map { it.toResponse() }
-        return ResponseEntity.ok(mapOf("menus" to menus))
+    fun getByStore(
+        @PathVariable("store_identifier") storeId: UUID,
+        @RequestParam("category_id", required = false) categoryId: UUID?,
+        @RequestParam("available", required = false) available: Boolean?
+    ): ResponseEntity<Map<String, Any?>> {
+        val menus = listMenusByStore.handle(storeId, categoryId, available)
+
+        // 카테고리별 그룹으로 응답 변환
+        val grouped = menus.groupBy { it.categoryIdentifier }
+            .entries
+            .sortedBy { it.key?.toString() }
+            .map { (catId, list) ->
+                val meta = catId?.let { cid ->
+                    categoryRepository.findById(cid)
+                }
+                mapOf(
+                    "category_identifier" to catId,
+                    "name" to meta?.name,
+                    "description" to meta?.description,
+                    "display_order" to meta?.displayOrder,
+                    "menus" to list.map { m ->
+                        mapOf(
+                            "menu_identifier" to m.identifier,
+                            "name" to m.name,
+                            "description" to m.description,
+                            "price" to m.price,
+                            "currency" to "KRW",
+                            "is_available" to m.isAvailable,
+                            "image_url" to m.imageUrl,
+                            "created_at" to m.createdDate
+                        )
+                    }
+                )
+            }
+
+        val body = mapOf(
+            "store_identifier" to storeId,
+            "categories" to grouped
+        )
+        return ResponseEntity.ok(body)
     }
 }
 
@@ -133,5 +186,6 @@ private fun Menu.toResponse() = MenuResponse(
     name = this.name,
     price = this.price,
     image_url = this.imageUrl,
+    is_available = this.isAvailable,
     created_date = this.createdDate
 )

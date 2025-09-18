@@ -9,6 +9,7 @@ interface UpdateMenuUseCase {
         val price: Int,
         val description: String?,
         val categoryIdentifier: UUID?,
+        val isAvailable: Boolean?,
         val imageFileBytes: ByteArray?,   // null이면 이미지 변경 없음
         val imageOriginalName: String?
     )
