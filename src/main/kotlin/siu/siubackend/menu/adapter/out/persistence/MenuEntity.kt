@@ -29,6 +29,9 @@ class MenuEntity(
     @Column(name = "image_url")
     var imageUrl: String? = null,
 
+    @Column(name = "is_available", nullable = false)
+    var isAvailable: Boolean,
+
     @Column(name = "created_at", nullable = false)
     var createdAt: OffsetDateTime
 )

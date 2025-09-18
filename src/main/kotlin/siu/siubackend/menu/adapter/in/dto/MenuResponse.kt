@@ -8,5 +8,6 @@ data class MenuResponse(
     val name: String,
     val price: Int,
     val image_url: String?,
+    val is_available: Boolean,
     val created_date: OffsetDateTime
 )

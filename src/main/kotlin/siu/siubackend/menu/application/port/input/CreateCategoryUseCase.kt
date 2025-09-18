@@ -6,7 +6,10 @@ interface CreateCategoryUseCase {
     fun handle(cmd: Command): UUID
 
     data class Command(
-        val name: String
+        val storeIdentifier: UUID,
+        val name: String,
+        val description: String?,
+        val displayOrder: Int?
     )
 }
 

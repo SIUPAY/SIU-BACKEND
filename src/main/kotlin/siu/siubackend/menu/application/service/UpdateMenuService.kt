@@ -25,7 +25,8 @@ class UpdateMenuService(
             price = cmd.price,
             description = cmd.description,
             categoryIdentifier = cmd.categoryIdentifier,
-            imageUrl = newUrl
+            imageUrl = newUrl,
+            isAvailable = cmd.isAvailable
         )
         repo.save(updated)
     }

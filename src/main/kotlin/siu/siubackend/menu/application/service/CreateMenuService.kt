@@ -6,6 +6,7 @@ import siu.siubackend.common.exception.ExceptionUtils
 import siu.siubackend.menu.application.port.input.CreateMenuUseCase
 import siu.siubackend.menu.application.port.output.ImageUploader
 import siu.siubackend.menu.application.port.output.MenuRepository
+import siu.siubackend.menu.domain.Menu
 import siu.siubackend.menu.domain.service.MenuFactory
 import java.util.*
 
@@ -16,7 +17,7 @@ class CreateMenuService(
 ) : CreateMenuUseCase {
 
     @Transactional
-    override fun handle(cmd: CreateMenuUseCase.Command): UUID {
+    override fun handle(cmd: CreateMenuUseCase.Command): Menu {
         validateCommand(cmd)
         
         val url = cmd.imageFileBytes?.let { uploader.upload(it, cmd.imageOriginalName) }
@@ -26,9 +27,10 @@ class CreateMenuService(
             name = cmd.name,
             price = cmd.price,
             description = cmd.description,
-            imageUrl = url
+            imageUrl = url,
+            isAvailable = cmd.isAvailable ?: true
         )
-        return repo.save(menu).identifier
+        return repo.save(menu)
     }
     
     private fun validateCommand(cmd: CreateMenuUseCase.Command) {

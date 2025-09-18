@@ -11,6 +11,7 @@ data class Menu(
     val price: Int,
     val description: String?,
     val imageUrl: String?,
+    val isAvailable: Boolean,
     val createdDate: OffsetDateTime
 ) {
     fun update(
@@ -18,7 +19,8 @@ data class Menu(
         price: Int,
         description: String?,
         categoryIdentifier: UUID?,
-        imageUrl: String?
+        imageUrl: String?,
+        isAvailable: Boolean?
     ): Menu {
         require(name.isNotBlank()) { "메뉴명은 비어있을 수 없습니다." }
         require(price >= 0) { "가격은 0 이상이어야 합니다." }
@@ -27,7 +29,8 @@ data class Menu(
             price = price,
             description = description,
             categoryIdentifier = categoryIdentifier,
-            imageUrl = imageUrl
+            imageUrl = imageUrl,
+            isAvailable = isAvailable ?: this.isAvailable
         )
     }
 }

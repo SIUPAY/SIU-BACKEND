@@ -27,6 +27,14 @@ class MenuRepositoryImpl(
     override fun findAllByStore(storeIdentifier: UUID): List<Menu> =
         jpa.findAllByStoreIdentifierOrderByCreatedAtDesc(storeIdentifier)
             .map { it.toDomain() }
+
+    override fun findByStoreWithFilters(
+        storeIdentifier: UUID,
+        categoryIdentifier: UUID?,
+        available: Boolean?
+    ): List<Menu> =
+        jpa.findByStoreWithFilters(storeIdentifier, categoryIdentifier, available)
+            .map { it.toDomain() }
 }
 
 // mapping
@@ -38,6 +46,7 @@ private fun Menu.toEntity() = MenuEntity(
     price = this.price,
     description = this.description,
     imageUrl = this.imageUrl,
+    isAvailable = this.isAvailable,
     createdAt = this.createdDate
 )
 
@@ -49,5 +58,6 @@ private fun MenuEntity.toDomain() = Menu(
     price = this.price,
     description = this.description,
     imageUrl = this.imageUrl,
+    isAvailable = this.isAvailable,
     createdDate = this.createdAt
 )
