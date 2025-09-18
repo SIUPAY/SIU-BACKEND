@@ -4,5 +4,5 @@ import java.util.UUID
 
 data class ZkLoginResponse(
     val identifier: UUID,
-    val zkloginSalt: String
+    val zklogin_salt: String
 )

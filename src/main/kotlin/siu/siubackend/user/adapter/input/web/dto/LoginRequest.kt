@@ -5,7 +5,7 @@ enum class LoginType {
 }
 
 data class LoginRequest(
-    val loginType: LoginType,
-    val walletAddress: String? = null,
-    val oauthUserId: String? = null
+    val login_type: LoginType,
+    val wallet_address: String,
+    val oauth_user_id: String? = null
 )

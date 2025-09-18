@@ -1,13 +1,28 @@
 package siu.siubackend.user.domain.service
 
+import org.springframework.stereotype.Component
 import siu.siubackend.user.domain.User
 import java.security.SecureRandom
 import java.time.OffsetDateTime
 import java.util.*
 
-object UserFactory {
+@Component
+class UserFactory {
     
-    fun createUserForZkLogin(oauthUserId: String): User {
+    fun createWithOauthUserId(oauthUserId: String): User {
+        return User(
+            identifier = UUID.randomUUID(),
+            nickname = generateRandomNickname(),
+            profileImgUrl = generateDefaultProfileImageUrl(),
+            oauthUserId = oauthUserId,
+            zkloginSalt = generateZkLoginSalt(),
+            walletAddress = null,
+            storeIdentifier = null,
+            createdDate = OffsetDateTime.now(),
+        )
+    }
+
+    fun createUserForZkLogin(oauthUserId: String, walletAddress: String): User {
         return User(
             identifier = UUID.randomUUID(),
             nickname = generateRandomNickname(),
@@ -50,6 +65,6 @@ object UserFactory {
         val secureRandom = SecureRandom()
         val saltBytes = ByteArray(32)
         secureRandom.nextBytes(saltBytes)
-        return Base64.getEncoder().encodeToString(saltBytes)
+        return saltBytes.joinToString("") { "%02x".format(it) }
     }
 }
