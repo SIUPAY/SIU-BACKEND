@@ -50,6 +50,6 @@ object UserFactory {
         val secureRandom = SecureRandom()
         val saltBytes = ByteArray(32)
         secureRandom.nextBytes(saltBytes)
-        return Base64.getEncoder().encodeToString(saltBytes)
+        return saltBytes.joinToString("") { "%02x".format(it) }
     }
 }
