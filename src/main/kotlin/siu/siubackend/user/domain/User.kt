@@ -26,4 +26,10 @@ data class User(
             storeIdentifier = storeIdentifier
         )
     }
+
+    fun updateWalletAddress(walletAddress: String): User {
+        return this.copy(
+            walletAddress = walletAddress
+        )
+    }
 }

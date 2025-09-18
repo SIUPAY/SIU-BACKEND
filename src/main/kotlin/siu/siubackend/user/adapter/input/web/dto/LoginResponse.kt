@@ -4,7 +4,7 @@ import java.util.UUID
 
 data class LoginResponse(
     val identifier: UUID,
-    val zkloginSalt: String? = null,
-    val walletAddress: String? = null,
-    val storeIdentifier: UUID? = null
+    val wallet_address: String,
+    val zklogin_salt: String? = null,
+    val store_identifier: UUID? = null
 )

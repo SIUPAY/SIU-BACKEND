@@ -1,5 +1,6 @@
 package siu.siubackend.common.exception.handler
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
@@ -24,11 +25,15 @@ import java.nio.file.AccessDeniedException
 @RestControllerAdvice(basePackages = ["siu.siubackend"])
 class GlobalExceptionHandler {
 
+    private val logger = LoggerFactory.getLogger(GlobalExceptionHandler::class.java)
+
     @ExceptionHandler(SiuException::class)
     fun handleSiuException(
         ex: SiuException,
         request: WebRequest
     ): ResponseEntity<ErrorResponse> {
+        logger.warn("SiuException occurred: ${ex.message}", ex)
+        
         val status = when (ex) {
             is ValidationException -> HttpStatus.BAD_REQUEST
             is EntityNotFoundException -> HttpStatus.NOT_FOUND
@@ -53,6 +58,8 @@ class GlobalExceptionHandler {
         ex: HttpMessageNotReadableException,
         request: WebRequest
     ): ResponseEntity<ErrorResponse> {
+        logger.warn("HttpMessageNotReadableException occurred: ${ex.message}", ex)
+        
         val detailedMessage = extractDetailedMessage(ex)
         
         val errorResponse = ErrorResponse(
@@ -71,6 +78,8 @@ class GlobalExceptionHandler {
         ex: MethodArgumentNotValidException,
         request: WebRequest
     ): ResponseEntity<ErrorResponse> {
+        logger.warn("MethodArgumentNotValidException occurred: ${ex.message}", ex)
+        
         val details = ex.bindingResult.fieldErrors.map { error ->
             "${error.field}: ${error.defaultMessage}"
         }
@@ -185,6 +194,8 @@ class GlobalExceptionHandler {
         ex: Exception,
         request: WebRequest
     ): ResponseEntity<ErrorResponse> {
+        logger.error("Unexpected exception occurred: ${ex.message}", ex)
+        
         val status = when (ex) {
             is IllegalArgumentException -> HttpStatus.BAD_REQUEST
             is IllegalStateException -> HttpStatus.CONFLICT
