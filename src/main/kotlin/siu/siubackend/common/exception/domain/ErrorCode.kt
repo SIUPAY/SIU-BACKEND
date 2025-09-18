@@ -11,6 +11,7 @@ enum class ErrorCode(val code: String, val message: String) {
     STORE_NOT_FOUND("E102", "상점을 찾을 수 없습니다"),
     MENU_NOT_FOUND("E103", "메뉴를 찾을 수 없습니다"),
     CATEGORY_NOT_FOUND("E104", "카테고리를 찾을 수 없습니다"),
+    ORDER_NOT_FOUND("E105", "주문을 찾을 수 없습니다"),
     
     UNAUTHORIZED_ACCESS("E201", "인증되지 않은 접근입니다"),
     

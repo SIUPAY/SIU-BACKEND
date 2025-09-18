@@ -12,7 +12,11 @@ data class Order(
     val totalFiatAmount: Double,
     val orderNumber: Int,
     val createdDate: OffsetDateTime
-)
+) {
+    fun changeStatus(newStatus: OrderStatus) {
+        this.status = newStatus
+    }
+}
 
 enum class OrderStatus {
     WAITING,

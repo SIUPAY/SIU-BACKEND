@@ -5,4 +5,6 @@ import java.util.*
 
 interface OrderJpaRepository : JpaRepository<OrderEntity, UUID>
 
-interface OrderMenuJpaRepository : JpaRepository<OrderMenuEntity, UUID>
+interface OrderMenuJpaRepository : JpaRepository<OrderMenuEntity, UUID> {
+    fun findByOrderIdentifierIn(orderIdentifiers: List<UUID>): List<OrderMenuEntity>
+}
