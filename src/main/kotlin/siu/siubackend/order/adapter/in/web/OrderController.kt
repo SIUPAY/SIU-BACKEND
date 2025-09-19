@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import siu.siubackend.order.adapter.`in`.dto.*
 import siu.siubackend.order.application.port.input.CreateOrderUseCase
 import siu.siubackend.order.application.port.input.GetOrderDetailUseCase
+import siu.siubackend.order.application.port.input.GetOrderStatisticsUseCase
 import siu.siubackend.order.application.port.input.SearchOrderUseCase
 import siu.siubackend.order.application.port.input.UpdateOrderStatusUseCase
 import java.time.OffsetDateTime
@@ -17,7 +18,8 @@ class OrderController(
     private val createOrderUseCase: CreateOrderUseCase,
     private val getOrderDetailUseCase: GetOrderDetailUseCase,
     private val searchOrderUseCase: SearchOrderUseCase,
-    private val updateOrderStatusUseCase: UpdateOrderStatusUseCase
+    private val updateOrderStatusUseCase: UpdateOrderStatusUseCase,
+    private val getOrderStatisticsUseCase: GetOrderStatisticsUseCase
 ) {
 
     @PostMapping
