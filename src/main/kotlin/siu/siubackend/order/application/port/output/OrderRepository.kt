@@ -1,8 +1,10 @@
 package siu.siubackend.order.application.port.output
 
 import siu.siubackend.menu.domain.Menu
+import siu.siubackend.order.domain.DailyOrderStatistics
 import siu.siubackend.order.domain.Order
 import siu.siubackend.order.domain.OrderMenu
+import siu.siubackend.order.domain.OrderStatisticsSummary
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -15,6 +17,18 @@ interface OrderRepository {
         searchStartDate: OffsetDateTime?,
         searchEndDate: OffsetDateTime?
     ): List<Order>
+    
+    fun getOrderStatisticsSummary(
+        storeIdentifier: UUID,
+        startDateTime: OffsetDateTime,
+        endDateTime: OffsetDateTime
+    ): OrderStatisticsSummary
+    
+    fun getDailyOrderStatistics(
+        storeIdentifier: UUID,
+        startDateTime: OffsetDateTime,
+        endDateTime: OffsetDateTime
+    ): List<DailyOrderStatistics>
 }
 
 interface OrderMenuRepository {
