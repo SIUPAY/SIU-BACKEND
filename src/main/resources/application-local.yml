@@ -37,7 +37,7 @@ sui:
     event-module-name: "payment"
     event-polling:
       enabled: true # 폴링 활성화
-      interval-seconds: 10 # 1초 주기
+      interval-seconds: 200 # 1초 주기
       batch-size: 20
     websocket:
       enabled: false # WebSocket 비활성화
