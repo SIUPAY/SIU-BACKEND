@@ -24,9 +24,25 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+    
+    // HTTP Client for Sui RPC calls
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    
+    // JSON processing
+    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    
+    // Scheduling for polling
+    implementation("org.springframework:spring-context")
+    
+    // Coroutines for async processing
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.7.3")
     
     // PostGIS and JTS dependencies
     implementation("org.hibernate:hibernate-spatial:6.2.13.Final")

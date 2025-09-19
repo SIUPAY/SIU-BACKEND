@@ -25,6 +25,24 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
 
+sui:
+  chain:
+    rpc-url: https://fullnode.devnet.sui.io:443 # 로컬도 devnet 사용
+    contract-address: "0x807d018a1f6314da2e59a3a2df4938dea6b33e5dff945d9aee5949e69645753c" # packageId
+    event-module-name: "payment"
+    event-polling:
+      enabled: true # 폴링 활성화
+      interval-seconds: 10 # 1초 주기
+      batch-size: 20
+    websocket:
+      enabled: false # WebSocket 비활성화
+      url: "wss://fullnode.devnet.sui.io:443"
+      reconnect:
+        max-attempts: 10
+        initial-delay: 500
+        max-delay: 15000
+        backoff-multiplier: 1.5
+
 logging:
   level:
     siu.siubackend: DEBUG
