@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import siu.siubackend.order.adapter.`in`.dto.*
 import siu.siubackend.order.application.port.input.CreateOrderUseCase
+import siu.siubackend.order.application.port.input.GetOrderDetailUseCase
 import siu.siubackend.order.application.port.input.SearchOrderUseCase
 import siu.siubackend.order.application.port.input.UpdateOrderStatusUseCase
 import java.time.OffsetDateTime
@@ -14,6 +15,7 @@ import java.util.*
 @RequestMapping("/api/orders")
 class OrderController(
     private val createOrderUseCase: CreateOrderUseCase,
+    private val getOrderDetailUseCase: GetOrderDetailUseCase,
     private val searchOrderUseCase: SearchOrderUseCase,
     private val updateOrderStatusUseCase: UpdateOrderStatusUseCase
 ) {
@@ -23,6 +25,50 @@ class OrderController(
     fun createOrder(@RequestBody request: CreateOrderRequest): CreateOrderResponse {
         val order = createOrderUseCase.createOrder(request)
         return CreateOrderResponse(orderIdentifier = order.identifier)
+    }
+    
+    @GetMapping("/{order_identifier}")
+    fun getOrderDetail(@PathVariable("order_identifier") orderIdentifier: UUID): ResponseEntity<OrderDetailResponse> {
+        val orderDetailView = getOrderDetailUseCase.getOrderDetail(orderIdentifier)
+        
+        val response = OrderDetailResponse(
+            order = OrderResponse(
+                identifier = orderDetailView.order.identifier,
+                storeIdentifier = orderDetailView.order.storeIdentifier,
+                userIdentifier = orderDetailView.order.userIdentifier,
+                status = orderDetailView.order.status,
+                paymentStatus = orderDetailView.order.paymentStatus,
+                totalFiatAmount = orderDetailView.order.totalFiatAmount,
+                orderNumber = orderDetailView.order.orderNumber,
+                createdDate = orderDetailView.order.createdDate
+            ),
+            storeName = orderDetailView.storeName,
+            orderMenus = orderDetailView.orderMenus.map { orderMenuDetail ->
+                OrderMenuDetailResponse(
+                    identifier = orderMenuDetail.orderMenu.identifier,
+                    orderIdentifier = orderMenuDetail.orderMenu.orderIdentifier,
+                    menuIdentifier = orderMenuDetail.orderMenu.menuIdentifier,
+                    quantity = orderMenuDetail.orderMenu.quantity,
+                    totalFiatAmount = orderMenuDetail.orderMenu.totalFiatAmount,
+                    menuName = orderMenuDetail.menuName,
+                    createdDate = orderMenuDetail.orderMenu.createdDate
+                )
+            },
+            orderSettlement = orderDetailView.orderSettlement?.let { settlement ->
+                OrderSettlementResponse(
+                    identifier = settlement.identifier,
+                    orderIdentifier = settlement.orderIdentifier,
+                    txId = settlement.txId,
+                    toWalletAddress = settlement.toWalletAddress,
+                    fromWalletAddress = settlement.fromWalletAddress,
+                    totalBrokerageFee = settlement.totalBrokerageFee,
+                    totalCryptoAmount = settlement.totalCryptoAmount,
+                    createdDate = settlement.createdDate
+                )
+            }
+        )
+        
+        return ResponseEntity.ok(response)
     }
     
     @GetMapping
@@ -42,7 +88,7 @@ class OrderController(
         val ordersWithDetails = searchOrderUseCase.searchOrders(request)
         
         val orderDetailResponses = ordersWithDetails.map { orderWithDetails ->
-            OrderDetailResponse(
+            OrderSummaryResponse(
                 identifier = orderWithDetails.order.identifier,
                 storeIdentifier = orderWithDetails.order.storeIdentifier,
                 userIdentifier = orderWithDetails.order.userIdentifier,
@@ -52,7 +98,7 @@ class OrderController(
                 orderNumber = orderWithDetails.order.orderNumber,
                 createdDate = orderWithDetails.order.createdDate,
                 orderMenus = orderWithDetails.orderMenus.map { orderMenuWithName ->
-                    OrderMenuDetailResponse(
+                    OrderMenuSummaryResponse(
                         identifier = orderMenuWithName.orderMenu.identifier,
                         orderIdentifier = orderMenuWithName.orderMenu.orderIdentifier,
                         menuIdentifier = orderMenuWithName.orderMenu.menuIdentifier,

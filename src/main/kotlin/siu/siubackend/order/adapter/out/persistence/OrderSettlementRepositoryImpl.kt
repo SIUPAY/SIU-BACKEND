@@ -22,6 +22,10 @@ class OrderSettlementRepositoryImpl(
     override fun findByOrderIdentifier(orderIdentifier: UUID): List<OrderSettlement> {
         return jpaRepository.findByOrderIdentifier(orderIdentifier).map { it.toDomain() }
     }
+    
+    override fun findFirstByOrderIdentifier(orderIdentifier: UUID): OrderSettlement? {
+        return jpaRepository.findFirstByOrderIdentifier(orderIdentifier)?.toDomain()
+    }
 }
 
 

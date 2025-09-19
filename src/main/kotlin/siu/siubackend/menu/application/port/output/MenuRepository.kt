@@ -10,4 +10,5 @@ interface MenuRepository {
     fun findAll(): List<Menu>
     fun findAllByStore(storeIdentifier: UUID): List<Menu>
     fun findByStoreWithFilters(storeIdentifier: UUID, categoryIdentifier: UUID?, available: Boolean?): List<Menu>
+    fun findByIdentifiers(menuIdentifiers: List<UUID>): List<Menu>
 }
