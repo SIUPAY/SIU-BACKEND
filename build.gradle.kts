@@ -33,10 +33,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     
-    // JSON processing
-    implementation("com.fasterxml.jackson.core:jackson-core:2.15.2")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
-    
     // Scheduling for polling
     implementation("org.springframework:spring-context")
     
