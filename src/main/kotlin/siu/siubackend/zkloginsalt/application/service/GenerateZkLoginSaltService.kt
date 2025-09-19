@@ -30,11 +30,11 @@ class GenerateZkLoginSaltService(
         zkLoginSaltRepository.save(zkLoginSalt)
         return salt
     }
-    
+
     private fun generateRandomSalt(): String {
-        val random = SecureRandom()
+        val secureRandom = SecureRandom()
         val saltBytes = ByteArray(32)
-        random.nextBytes(saltBytes)
-        return Base64.getEncoder().encodeToString(saltBytes)
+        secureRandom.nextBytes(saltBytes)
+        return saltBytes.joinToString("") { "%02x".format(it) }
     }
 }
