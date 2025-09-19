@@ -7,7 +7,7 @@ import java.time.OffsetDateTime
 import java.util.*
 
 @Component
-class UserFactory {
+object UserFactory {
     
     fun createWithOauthUserId(oauthUserId: String): User {
         return User(
@@ -45,6 +45,19 @@ class UserFactory {
             walletAddress = walletAddress,
             storeIdentifier = null,
             createdDate = OffsetDateTime.now(),
+        )
+    }
+
+    fun createWithWallet(walletAddress: String, createdDate: OffsetDateTime): User {
+        return User(
+            identifier = UUID.randomUUID(),
+            nickname = generateRandomNickname(),
+            profileImgUrl = generateDefaultProfileImageUrl(),
+            oauthUserId = null,
+            zkloginSalt = null,
+            walletAddress = walletAddress,
+            storeIdentifier = null,
+            createdDate = createdDate,
         )
     }
 
