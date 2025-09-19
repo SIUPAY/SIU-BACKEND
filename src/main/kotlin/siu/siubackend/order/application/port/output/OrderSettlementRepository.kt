@@ -7,6 +7,7 @@ interface OrderSettlementRepository {
     fun save(orderSettlement: OrderSettlement): OrderSettlement
     fun findByTxId(txId: String): OrderSettlement?
     fun findByOrderIdentifier(orderIdentifier: UUID): List<OrderSettlement>
+    fun findFirstByOrderIdentifier(orderIdentifier: UUID): OrderSettlement?
 }
 
 

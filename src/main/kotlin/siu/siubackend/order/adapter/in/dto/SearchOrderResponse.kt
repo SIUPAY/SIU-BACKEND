@@ -1,16 +1,15 @@
 package siu.siubackend.order.adapter.`in`.dto
 
-import siu.siubackend.order.domain.Order
 import siu.siubackend.order.domain.OrderStatus
 import siu.siubackend.order.domain.PaymentStatus
 import java.time.OffsetDateTime
 import java.util.*
 
 data class SearchOrderResponse(
-    val orders: List<OrderDetailResponse>
+    val orders: List<OrderSummaryResponse>
 )
 
-data class OrderDetailResponse(
+data class OrderSummaryResponse(
     val identifier: UUID,
     val storeIdentifier: UUID,
     val userIdentifier: UUID,
@@ -19,15 +18,15 @@ data class OrderDetailResponse(
     val totalFiatAmount: Double,
     val orderNumber: Int,
     val createdDate: OffsetDateTime,
-    val orderMenus: List<OrderMenuDetailResponse>
+    val orderMenus: List<OrderMenuSummaryResponse>
 )
 
-data class OrderMenuDetailResponse(
+data class OrderMenuSummaryResponse(
     val identifier: UUID,
     val orderIdentifier: UUID,
     val menuIdentifier: UUID,
     val menuName: String,
     val quantity: Int,
     val totalFiatAmount: Int,
-    val createdDate: OffsetDateTime,
+    val createdDate: OffsetDateTime
 )

@@ -64,22 +64,3 @@ class OrderRepositoryImpl(
             .map { it.toDomain() }
     }
 }
-
-@Repository
-class OrderMenuRepositoryImpl(
-    private val orderMenuJpaRepository: OrderMenuJpaRepository
-) : OrderMenuRepository {
-
-    override fun saveAll(orderMenus: List<OrderMenu>): List<OrderMenu> {
-        val entities = orderMenus.map { it.toEntity() }
-        return orderMenuJpaRepository.saveAll(entities).map { it.toDomain() }
-    }
-    
-    override fun findByOrderIdentifiers(orderIdentifiers: List<UUID>): List<OrderMenu> {
-        if (orderIdentifiers.isEmpty()) {
-            return emptyList()
-        }
-        return orderMenuJpaRepository.findByOrderIdentifierIn(orderIdentifiers)
-            .map { it.toDomain() }
-    }
-}

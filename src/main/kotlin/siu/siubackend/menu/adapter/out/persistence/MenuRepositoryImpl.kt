@@ -35,6 +35,10 @@ class MenuRepositoryImpl(
     ): List<Menu> =
         jpa.findByStoreWithFilters(storeIdentifier, categoryIdentifier, available)
             .map { it.toDomain() }
+
+    override fun findByIdentifiers(menuIdentifiers: List<UUID>): List<Menu> {
+        return jpa.findAllById(menuIdentifiers).map { it.toDomain() }
+    }
 }
 
 // mapping
