@@ -112,14 +112,14 @@ class SuiEventConsumerService(
     }
 
     private fun processPaymentEvent(event: SuiPaidEvent) {
-        val command = RecordOrderSettlementUseCase.Command(
+        val command = RecordOrderSettlementUseCase.Command.fromSuiEvent(
             orderIdentifier = event.orderIdentifier,
             txId = event.transactionDigest,
             toWalletAddress = event.toWalletAddress,
             fromWalletAddress = event.fromWalletAddress,
-            totalBrokerageFee = event.totalBrokerageFee,
-            totalCryptoAmount = event.totalCryptoAmount,
-            updateOrderPaymentStatus = true // 결제 상태도 함께 업데이트
+            totalBrokerageFeeInMist = event.totalBrokerageFee,
+            totalCryptoAmountInMist = event.totalCryptoAmount,
+            updateOrderPaymentStatus = true
         )
 
         val result = recordOrderSettlementUseCase.record(command)

@@ -31,14 +31,14 @@ class RecordOrderSettlementService(
         val order = orderRepository.findById(command.orderIdentifier)
             ?: throw EntityNotFoundException(ErrorCode.ORDER_NOT_FOUND.code, ErrorCode.ORDER_NOT_FOUND.message)
 
-        // 정산 생성 및 저장
-        val settlement = OrderSettlementFactory.create(
+        // SuiPaidEvent에서 오는 값들은 MIST 단위이므로 createFromMistAmounts 사용
+        val settlement = OrderSettlementFactory.createFromMistAmounts(
             orderIdentifier = command.orderIdentifier,
             txId = command.txId,
             toWalletAddress = command.toWalletAddress,
             fromWalletAddress = command.fromWalletAddress,
-            totalBrokerageFee = command.totalBrokerageFee,
-            totalCryptoAmount = command.totalCryptoAmount
+            totalBrokerageFeeInMist = command.totalBrokerageFee,
+            totalCryptoAmountInMist = command.totalCryptoAmount
         )
         orderSettlementRepository.save(settlement)
 
@@ -54,5 +54,3 @@ class RecordOrderSettlementService(
         )
     }
 }
-
-
