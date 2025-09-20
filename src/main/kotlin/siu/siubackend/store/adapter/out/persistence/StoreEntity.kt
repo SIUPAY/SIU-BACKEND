@@ -17,9 +17,6 @@ data class StoreEntity(
     @Column(name = "identifier")
     val identifier: UUID,
 
-    @Column(name = "user_identifier", nullable = false)
-    val userIdentifier: UUID,
-
     @Column(name = "name", nullable = false)
     var name: String,
 
@@ -45,18 +42,17 @@ data class StoreEntity(
     val createdDate: OffsetDateTime
 ) {
     companion object {
-        fun fromDomain(store: Store, userIdentifier: UUID): StoreEntity {
+        fun Store.toEntity(): StoreEntity {
             return StoreEntity(
-                identifier = store.identifier,
-                userIdentifier = userIdentifier,
-                name = store.name,
-                address = store.address,
-                phone = store.phone,
-                profileImgUrl = store.profileImgUrl,
-                walletAddress = store.walletAddress,
-                location = store.location.toGeometryPoint(),
-                totalOrderCount = store.totalOrderCount,
-                createdDate = store.createdDate
+                identifier = this.identifier,
+                name = this.name,
+                address = this.address,
+                phone = this.phone,
+                profileImgUrl = this.profileImgUrl,
+                walletAddress = this.walletAddress,
+                location = this.location.toGeometryPoint(),
+                totalOrderCount = this.totalOrderCount,
+                createdDate = this.createdDate
             )
         }
 
@@ -84,8 +80,4 @@ data class StoreEntity(
             createdDate = createdDate
         )
     }
-}
-
-fun Store.toEntity(userIdentifier: UUID): StoreEntity {
-    return StoreEntity.fromDomain(this, userIdentifier)
 }

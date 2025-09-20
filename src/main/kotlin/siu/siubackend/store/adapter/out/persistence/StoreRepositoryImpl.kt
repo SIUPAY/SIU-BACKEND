@@ -1,6 +1,7 @@
 package siu.siubackend.store.adapter.out.persistence
 
 import org.springframework.stereotype.Repository
+import siu.siubackend.store.adapter.out.persistence.StoreEntity.Companion.toEntity
 import siu.siubackend.store.application.port.input.SearchStoreResult
 import siu.siubackend.store.application.port.output.StoreRepository
 import siu.siubackend.store.domain.Location
@@ -15,8 +16,8 @@ class StoreRepositoryImpl(
     private val storeJpaRepository: StoreJpaRepository
 ) : StoreRepository {
 
-    override fun save(store: Store, userIdentifier: UUID): Store {
-        val storeEntity = store.toEntity(userIdentifier)
+    override fun save(store: Store): Store {
+        val storeEntity = store.toEntity()
         val savedEntity = storeJpaRepository.save(storeEntity)
         return savedEntity.toDomain()
     }
