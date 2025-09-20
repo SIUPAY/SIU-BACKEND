@@ -38,7 +38,7 @@ class CreateStoreService(
             location = request.location
         )
 
-        val savedStore = storeRepository.save(store, userIdentifier)
+        val savedStore = storeRepository.save(store)
 
         val updatedUser = user.updateStoreIdentifier(savedStore.identifier)
         userRepository.save(updatedUser)
