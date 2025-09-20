@@ -20,6 +20,10 @@ class CategoryRepositoryImpl(
 
     override fun findAllByIds(ids: Collection<UUID>): List<Category> =
         jpa.findAllById(ids).map { it.toDomain() }
+
+    override fun findAllByStoreIdentifier(storeIdentifier: UUID): List<Category> =
+        jpa.findAllByStoreIdentifierOrderByDisplayOrderAscCreatedAtAsc(storeIdentifier)
+            .map { it.toDomain() }
 }
 
 private fun Category.toEntity() = CategoryEntity(
