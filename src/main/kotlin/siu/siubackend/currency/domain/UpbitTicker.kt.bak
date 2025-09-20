@@ -1,0 +1,6 @@
+package siu.siubackend.currency.domain
+
+data class UpbitTicker(
+    val market: String,
+    val tradePrice: Double
+)
