@@ -26,10 +26,10 @@ class OrderSettlementEntity(
     val fromWalletAddress: String,
 
     @Column(name = "total_brokerage_fee", nullable = false)
-    val totalBrokerageFee: Double,
+    val totalBrokerageFee: Double, // SUI 단위로 저장 (MIST에서 변환됨)
 
     @Column(name = "total_crypto_amount", nullable = false)
-    val totalCryptoAmount: Double,
+    val totalCryptoAmount: Double, // SUI 단위로 저장 (MIST에서 변환됨)
 
     @Column(name = "created_date", nullable = false)
     val createdDate: OffsetDateTime
@@ -63,5 +63,3 @@ class OrderSettlementEntity(
         }
     }
 }
-
-

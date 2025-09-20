@@ -1,5 +1,6 @@
 package siu.siubackend.order.domain
 
+import siu.siubackend.currency.domain.SuiCurrencyUtils
 import java.time.OffsetDateTime
 import java.util.*
 
@@ -15,13 +16,14 @@ data class OrderSettlement(
 )
 
 object OrderSettlementFactory {
-    fun create(
+
+    fun createFromMistAmounts(
         orderIdentifier: UUID,
         txId: String,
         toWalletAddress: String,
         fromWalletAddress: String,
-        totalBrokerageFee: Double,
-        totalCryptoAmount: Double
+        totalBrokerageFeeInMist: Double,
+        totalCryptoAmountInMist: Double
     ): OrderSettlement {
         return OrderSettlement(
             identifier = UUID.randomUUID(),
@@ -29,11 +31,9 @@ object OrderSettlementFactory {
             txId = txId,
             toWalletAddress = toWalletAddress,
             fromWalletAddress = fromWalletAddress,
-            totalBrokerageFee = totalBrokerageFee,
-            totalCryptoAmount = totalCryptoAmount,
+            totalBrokerageFee = SuiCurrencyUtils.mistToSui(totalBrokerageFeeInMist),
+            totalCryptoAmount = SuiCurrencyUtils.mistToSui(totalCryptoAmountInMist),
             createdDate = OffsetDateTime.now()
         )
     }
 }
-
-

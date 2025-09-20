@@ -4,6 +4,7 @@ import java.util.*
 
 /**
  * Sui 체인에서 발생하는 PaidEvent 도메인 모델
+ * 모든 금액 필드는 MIST 단위로 저장됨 (Sui 네트워크에서 제공하는 원본 단위)
  */
 data class SuiPaidEvent(
     val transactionDigest: String,
@@ -11,11 +12,12 @@ data class SuiPaidEvent(
     val orderIdentifier: UUID,
     val fromWalletAddress: String,
     val toWalletAddress: String,
-    val totalCryptoAmount: Double,
-    val totalBrokerageFee: Double,
+    val totalCryptoAmount: Double, // MIST 단위
+    val totalBrokerageFee: Double, // MIST 단위
     val blockNumber: Long,
     val timestamp: Long
 ) {
+    
     companion object {
         /**
          * Sui RPC 응답에서 PaidEvent 파싱
@@ -37,8 +39,8 @@ data class SuiPaidEvent(
                 orderIdentifier = UUID.fromString(parsedJson["order_identifier"] as String),
                 fromWalletAddress = parsedJson["from_wallet"] as String,
                 toWalletAddress = parsedJson["to_wallet"] as String,
-                totalCryptoAmount = (parsedJson["amount"] as Number).toDouble(),
-                totalBrokerageFee = (parsedJson["fee"] as Number).toDouble(),
+                totalCryptoAmount = (parsedJson["amount"] as Number).toDouble(), // MIST 단위
+                totalBrokerageFee = (parsedJson["fee"] as Number).toDouble(), // MIST 단위
                 blockNumber = (eventData["timestampMs"] as Number).toLong(),
                 timestamp = (eventData["timestampMs"] as Number).toLong()
             )
@@ -112,8 +114,8 @@ data class SuiPaidEvent(
                     orderIdentifier = UUID.fromString(orderIdRaw),
                     fromWalletAddress = sender,
                     toWalletAddress = recipient,
-                    totalCryptoAmount = amount,
-                    totalBrokerageFee = fee,
+                    totalCryptoAmount = amount, // MIST 단위
+                    totalBrokerageFee = fee, // MIST 단위
                     blockNumber = timestamp, // 블록넘버 정보 없으면 timestamp로 대체
                     timestamp = timestamp
                 )
