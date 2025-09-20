@@ -12,7 +12,6 @@ interface StoreJpaRepository : JpaRepository<StoreEntity, UUID> {
         value = """
         SELECT 
             s.identifier,
-            s.user_identifier,
             s.name,
             s.address,
             s.phone,

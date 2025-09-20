@@ -54,7 +54,7 @@ class StoreRepositoryImpl(
 
         return results.map { row ->
             val store = mapRowToStore(row)
-            val distanceValue = (row[9] as? Number)?.toDouble() ?: 0.0
+            val distanceValue = (row[8] as? Number)?.toDouble() ?: 0.0
 
             SearchStoreResult(
                 store = store,
@@ -70,17 +70,17 @@ class StoreRepositoryImpl(
                 is String -> UUID.fromString(id)
                 else -> throw IllegalArgumentException("Invalid identifier type: ${id::class}")
             },
-            name = row[2].toString(),
-            address = row[3].toString(),
-            phone = row[4]?.toString(),
-            profileImgUrl = row[5].toString(),
-            walletAddress = row[6].toString(),
-            location = Location(latitude = 0.0, longitude = 0.0), // 검색 결과에서는 위치 정보 불필요
-            totalOrderCount = when (val count = row[7]) {
+            name = row[1].toString(),
+            address = row[2].toString(),
+            phone = row[3]?.toString(),
+            profileImgUrl = row[4].toString(),
+            walletAddress = row[5].toString(),
+            location = Location(latitude = 0.0, longitude = 0.0),
+            totalOrderCount = when (val count = row[6]) {
                 is Number -> count.toInt()
                 else -> 0
             },
-            createdDate = when (val date = row[8]) {
+            createdDate = when (val date = row[7]) {
                 is Instant -> date.atOffset(ZoneOffset.UTC)
                 is java.sql.Timestamp -> date.toInstant().atOffset(ZoneOffset.UTC)
                 else -> OffsetDateTime.now()
