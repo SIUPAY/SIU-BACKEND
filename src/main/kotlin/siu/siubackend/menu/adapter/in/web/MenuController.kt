@@ -49,7 +49,7 @@ class MenuController(
     fun create(
         @PathVariable("store_identifier") storeIdentifier: UUID,
         @Parameter(
-            name = "menu",
+            name = "data",
             required = true,
             content = [Content(
                 mediaType = "application/json",
@@ -57,7 +57,7 @@ class MenuController(
                 examples = [ExampleObject(value = """{\n  \"category_identifier\": \"<uuid>\",\n  \"name\": \"아메리카노\",\n  \"price\": 4500,\n  \"description\": \"hot\",\n  \"is_available\": true\n}""")]
             )]
         )
-        @RequestPart("menu") menuJson: String,
+        @RequestPart("data") menuJson: String,
         @Parameter(name = "image", content = [Content(mediaType = "image/*", schema = Schema(type = "string", format = "binary"))])
         @RequestPart("image", required = false) image: MultipartFile?
     ): ResponseEntity<Map<String, Any?>> {
@@ -101,7 +101,7 @@ class MenuController(
     fun update(
         @PathVariable id: UUID,
         @Parameter(
-            name = "menu",
+            name = "data",
             required = true,
             content = [Content(
                 mediaType = "application/json",
@@ -109,7 +109,7 @@ class MenuController(
                 examples = [ExampleObject(value = """{\n  \"name\": \"라떼\",\n  \"price\": 5000,\n  \"description\": \"iced\",\n  \"category_identifier\": null\n}""")]
             )]
         )
-        @RequestPart("menu") menuJson: String,
+        @RequestPart("data") menuJson: String,
         @Parameter(name = "image", content = [Content(mediaType = "image/*", schema = Schema(type = "string", format = "binary"))])
         @RequestPart("image", required = false) image: MultipartFile?
     ): ResponseEntity<Void> {
