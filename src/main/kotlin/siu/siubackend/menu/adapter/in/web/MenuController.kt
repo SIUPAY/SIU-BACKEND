@@ -37,13 +37,13 @@ class MenuController(
         return ResponseEntity.ok(mapOf("menus" to menus))
     }
 
-    // POST /api/stores/{store_identifier}/menu (multipart) -> 201
+    // POST /api/stores/{store_identifier}/menus (multipart) -> 201
     @Operation(
         summary = "메뉴 생성",
         description = "multipart/form-data로 JSON(menu) + 이미지(image) 업로드"
     )
     @PostMapping(
-        "/api/stores/{store_identifier}/menu",
+        "/api/stores/{store_identifier}/menus",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
     fun create(
@@ -143,35 +143,37 @@ class MenuController(
         @RequestParam("category_id", required = false) categoryId: UUID?,
         @RequestParam("available", required = false) available: Boolean?
     ): ResponseEntity<Map<String, Any?>> {
+        // 1. 해당 매장의 모든 카테고리 조회
+        val allCategories = categoryRepository.findAllByStoreIdentifier(storeId)
+        
+        // 2. 해당 매장의 메뉴 조회
         val menus = listMenusByStore.handle(storeId, categoryId, available)
+        
+        // 3. 메뉴를 카테고리별로 그룹핑
+        val menusByCategory = menus.groupBy { it.categoryIdentifier }
 
-        // 카테고리별 그룹으로 응답 변환
-        val grouped = menus.groupBy { it.categoryIdentifier }
-            .entries
-            .sortedBy { it.key?.toString() }
-            .map { (catId, list) ->
-                val meta = catId?.let { cid ->
-                    categoryRepository.findById(cid)
+        // 4. 모든 카테고리에 대해 응답 생성 (메뉴가 없는 카테고리도 포함)
+        val grouped = allCategories.map { category ->
+            val categoryMenus = menusByCategory[category.identifier] ?: emptyList()
+            mapOf(
+                "category_identifier" to category.identifier,
+                "name" to category.name,
+                "description" to category.description,
+                "display_order" to category.displayOrder,
+                "menus" to categoryMenus.map { m ->
+                    mapOf(
+                        "menu_identifier" to m.identifier,
+                        "name" to m.name,
+                        "description" to m.description,
+                        "price" to m.price,
+                        "currency" to "KRW",
+                        "is_available" to m.isAvailable,
+                        "image_url" to m.imageUrl,
+                        "created_at" to m.createdDate
+                    )
                 }
-                mapOf(
-                    "category_identifier" to catId,
-                    "name" to meta?.name,
-                    "description" to meta?.description,
-                    "display_order" to meta?.displayOrder,
-                    "menus" to list.map { m ->
-                        mapOf(
-                            "menu_identifier" to m.identifier,
-                            "name" to m.name,
-                            "description" to m.description,
-                            "price" to m.price,
-                            "currency" to "KRW",
-                            "is_available" to m.isAvailable,
-                            "image_url" to m.imageUrl,
-                            "created_at" to m.createdDate
-                        )
-                    }
-                )
-            }
+            )
+        }
 
         val body = mapOf(
             "store_identifier" to storeId,
